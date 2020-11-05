@@ -24,13 +24,13 @@
     <div class="form-group">
         <label>Password</label>
         <input class="form-control"
-        name="password" placeholder ="Enter password"
+        name="password" type="password" placeholder ="Enter password"
         maxlength="30">
     </div>
     <div class="form-group">
         <label>Password again</label>
         <input class="form-control"
-        name="passwordagain" placeholder ="Enter password again"
+        name="passwordagain" type="password" placeholder ="Enter password again"
         maxlength="30">
     </div>
     <div>

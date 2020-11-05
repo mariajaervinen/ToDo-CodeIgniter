@@ -7,8 +7,22 @@ class TodoModel extends Model{
 
     protected $allowedFields = ['title','description','user_id'];
 
+    /**
+     * Retrieve all rows from task table
+     */
     public function getTodos(){
-        return $this->findAll();
+        $this->table('task');
+        $this->select('title,description,firstname,lastname,task.id AS id');
+        $this->join('user','user.id = task.user_id');
+        $query = $this->get();
+
+        return $query->getResultArray();
+        //return $this->finAll(); //findAll returns all rows
+    }
+
+    public function remove($id){
+        $this->where('id',$id);
+        $this->delete();
     }
 }
 

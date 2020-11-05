@@ -6,7 +6,7 @@ use App\Models\TodoModel;
 class Todo extends BaseController
 {
     //Contructor starts session
-    public function _construct(){
+    public function __construct(){
         $session = \Config\Services::session();
         $session->start();
     }
@@ -17,15 +17,17 @@ class Todo extends BaseController
             return redirect('login'); //jos ei ole kirjautunut, redirect login sivulle
         }
         $model = new TodoModel();
+
         $data['title'] = 'Todo';
         $data['todos'] = $model->getTodos();
-        echo view ('templates/header', $data);
+        echo view ('templates/header');
         echo view ('todo/list', $data);
-        echo view ('templates/footer', $data);
+        echo view ('templates/footer');
 
     }
 
     public function create(){
+
         if(!isset($_SESSION['user'])){
             return redirect('login'); //jos ei ole kirjautunut, redirect login sivulle
         }
@@ -49,5 +51,21 @@ class Todo extends BaseController
             ]);
             return redirect('todo');
         }
+    }
+
+    public function delete($id){
+        //check if provided id is numeric(to prevent sql injection)
+        if(!is_numeric($id)){
+            throw new \Exception('Provided id is not a number');
+        }
+        //Only logged user is allowed to delete
+        if(!isset($_SESSION['user'])){
+            return redirect('login');
+        }
+        $model = new TodoModel(); //create object for todomodel
+
+        $model->remove($id);
+        return redirect('todo');
+       
     }
 }

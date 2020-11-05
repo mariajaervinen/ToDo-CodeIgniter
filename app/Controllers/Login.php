@@ -9,7 +9,7 @@ const LOGIN_TITLE = 'Todo - login';
 class Login extends BaseController{
 
     //Contructor starts session
-    public function _construct(){
+    public function __construct(){
         $session = \Config\Services::session();
         $session->start();
     }
@@ -28,10 +28,9 @@ class Login extends BaseController{
     }
 
     public function registration(){ //tallentaa tietokantaan käyttäjän tiedot
-
         $model = new LoginModel();
 
-        if(!$this->validate([
+        if(!$this->validate([//lomakkeen syötteet
             'user' => 'required|min_length[8]|max_length[30]',
             'password' => 'required|min_length[8]|max_length[30]',
             'passwordagain' => 'required|min_length[8]|max_length[30]|matches[password]'
@@ -40,7 +39,7 @@ class Login extends BaseController{
             echo view('login/register');
             echo view('templates/footer');
         }else{
-            $model->save([
+            $model->save([//tietokantaan->lomakkeen syötteet
                 'username' => $this->request->getVar('user'),
                 'password' => password_hash($this->request->getVar('password'),PASSWORD_DEFAULT),
                 'firstname' => $this->request->getVar('firstname'),
@@ -54,8 +53,8 @@ class Login extends BaseController{
     public function check(){
         $model = new LoginModel();
 
-        if(!$this->validate([
-            'username' => 'required|min_length[8]|max_length[30]',
+        if(!$this->validate([//views lomakkeen syötteet
+            'user' => 'required|min_length[8]|max_length[30]',
             'password' => 'required|min_length[8]|max_length[30]'
         ])){
             echo view('templates/header', ['title' => LOGIN_TITLE]);
@@ -63,14 +62,14 @@ class Login extends BaseController{
             echo view('templates/footer');
         }else{
             $user = $model->check( //use model to check if user exists
-                $this->request->getVar('username'),
-                $this->request->getVar('password')
+                $this->request->getVar('user'),//lomakkeen syötteet
+                $this->request->getVar('password')//verrataan tietokannan tietoihin
             );
             if($user){//if user exists, store into session and redirect
-                $_SESSION['username'] =$user;
-                return redirect()->to('todo');
+                $_SESSION['user'] =$user;
+                return redirect('todo');
             }else{ //user is null, redirect to login page
-                return redirect()->to('login');
+                return redirect('login');
             }
         }
     }
